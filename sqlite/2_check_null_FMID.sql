@@ -1,0 +1,3 @@
+SELECT COUNT(FMID)
+  FROM Farmers_Market_Data
+  WHERE FMID IS NULL;
