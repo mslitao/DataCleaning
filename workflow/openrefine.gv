@@ -1,0 +1,105 @@
+digraph Workflow {
+rankdir=TB
+fontname=Courier; fontsize=18; labelloc=t
+label=CleanWithOpenRefine
+subgraph cluster_workflow_box_outer { label=""; color=black; penwidth=2
+subgraph cluster_workflow_box_inner { label=""; color=white
+node[shape=box style=filled fillcolor="#CCFFCC" peripheries=1 fontname=Courier]
+LoadToOpenRefine [shape=record rankdir=LR label="{<f0> LoadToOpenRefine |<f1> Upload farmersmarkets.csv data to OpenRefine}"];
+ColumnsToClean [shape=record rankdir=LR label="{<f0> ColumnsToClean |<f1> Columns that are cleaned}"];
+TrimSpaces [shape=record rankdir=LR label="{<f0> TrimSpaces |<f1> Trim leading and trailing white space}"];
+CollapseSpaces [shape=record rankdir=LR label="{<f0> CollapseSpaces |<f1> Collapse consecutive white spaces}"];
+FormatTime [shape=record rankdir=LR label="{<f0> FormatTime |<f1> Change 'Month DD YYYY' to 'MM/DD/YYYY'}"];
+ClusterValues [shape=record rankdir=LR label="{<f0> ClusterValues |<f1> Cluster Similar values}"];
+DeleteNAorNONE [shape=record rankdir=LR label="{<f0> DeleteNAorNONE |<f1> Delete na or none values}"];
+SplitInto2Columns [shape=record rankdir=LR label="{<f0> SplitInto2Columns |<f1> Split date into Start Date and End Date}"];
+CleanFormatZip [shape=record rankdir=LR label="{<f0> CleanFormatZip |<f1> Clean any string and reformat to NNNNN or NNNNN-NNNN}"];
+ToDateType [shape=record rankdir=LR label="{<f0> ToDateType |<f1> Change data type to date}"];
+node[shape=box style="rounded,filled" fillcolor="#FFFFCC" peripheries=1 fontname=Helvetica]
+farmersmarkets_csv [shape=record rankdir=LR label="{<f0> farmersmarkets_csv |<f1> file\://data/farmersmarkets.csv}"];
+spreadsheet
+MarketName
+Facebook
+Twitter
+Website
+Youtube
+OtherMeida
+street
+city
+Season1Date
+x
+y
+updatedTime
+MarketName_
+city_
+Facebook_
+Twitter_
+Youtube_
+Season1Date_
+zip
+Season1StartDate
+Season1EndDate
+node[shape=box style="rounded,filled" fillcolor="#FCFCFC" peripheries=1 fontname=Helvetica]
+LoadToOpenRefine -> spreadsheet
+farmersmarkets_csv -> LoadToOpenRefine
+ColumnsToClean -> MarketName
+ColumnsToClean -> Facebook
+ColumnsToClean -> Twitter
+ColumnsToClean -> Website
+ColumnsToClean -> Youtube
+ColumnsToClean -> OtherMeida
+ColumnsToClean -> street
+ColumnsToClean -> city
+ColumnsToClean -> x
+ColumnsToClean -> y
+ColumnsToClean -> Season1Date
+ColumnsToClean -> zip
+ColumnsToClean -> updatedTime
+spreadsheet -> ColumnsToClean
+TrimSpaces -> Twitter_
+TrimSpaces -> Youtube_
+MarketName -> TrimSpaces
+Facebook -> TrimSpaces
+Twitter -> TrimSpaces
+Website -> TrimSpaces
+Youtube -> TrimSpaces
+OtherMeida -> TrimSpaces
+street -> TrimSpaces
+city -> TrimSpaces
+Season1Date -> TrimSpaces
+x -> TrimSpaces
+y -> TrimSpaces
+CollapseSpaces -> MarketName_
+CollapseSpaces -> city_
+CollapseSpaces -> Facebook_
+CollapseSpaces -> Season1Date_
+MarketName -> CollapseSpaces
+Facebook -> CollapseSpaces
+OtherMeida -> CollapseSpaces
+street -> CollapseSpaces
+city -> CollapseSpaces
+Season1Date -> CollapseSpaces
+updatedTime -> FormatTime
+MarketName_ -> ClusterValues
+city_ -> ClusterValues
+Facebook_ -> DeleteNAorNONE
+Twitter_ -> DeleteNAorNONE
+Youtube_ -> DeleteNAorNONE
+SplitInto2Columns -> Season1StartDate
+SplitInto2Columns -> Season1EndDate
+Season1Date_ -> SplitInto2Columns
+zip -> CleanFormatZip
+Season1StartDate -> ToDateType
+Season1EndDate -> ToDateType
+}}
+subgraph cluster_input_ports_group_outer { label=""; color=white
+subgraph cluster_input_ports_group_inner { label=""; color=white
+node[shape=circle style="rounded,filled" fillcolor="#FFFFFF" peripheries=1 fontname=Helvetica width=0.2]
+farmersmarkets_csv_input_port [label=""]
+}}
+subgraph cluster_output_ports_group_outer { label=""; color=white
+subgraph cluster_output_ports_group_inner { label=""; color=white
+node[shape=circle style="rounded,filled" fillcolor="#FFFFFF" peripheries=1 fontname=Helvetica width=0.2]
+}}
+farmersmarkets_csv_input_port -> farmersmarkets_csv
+}
