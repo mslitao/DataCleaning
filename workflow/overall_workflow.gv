@@ -1,0 +1,38 @@
+digraph Workflow {
+rankdir=TB
+fontname=Courier; fontsize=18; labelloc=t
+label=Overall_Data_Cleaning
+subgraph cluster_workflow_box_outer { label=""; color=black; penwidth=2
+subgraph cluster_workflow_box_inner { label=""; color=white
+node[shape=box style=filled fillcolor="#CCFFCC" peripheries=1 fontname=Courier]
+CleanWithOpenRefine [shape=record rankdir=LR label="{<f0> CleanWithOpenRefine |<f1> Use OpenRefine to clean Farmers_latest.csv}"];
+ConvertToDatabaseWithSQLite [shape=record rankdir=LR label="{<f0> ConvertToDatabaseWithSQLite |<f1> Convert csv file to db file}"];
+IntegrityCheckWithSQLite [shape=record rankdir=LR label="{<f0> IntegrityCheckWithSQLite |<f1> Use SQLite to check integrity}"];
+CleanWithSQLite [shape=record rankdir=LR label="{<f0> CleanWithSQLite |<f1> Clean and update database file}"];
+node[shape=box style="rounded,filled" fillcolor="#FFFFCC" peripheries=1 fontname=Helvetica]
+Farmers_latest_csv [shape=record rankdir=LR label="{<f0> Farmers_latest_csv |<f1> file\://Data/Farmers_latest.csv}"];
+Farmers_Market_Data_csv [shape=record rankdir=LR label="{<f0> Farmers_Market_Data_csv |<f1> file\://Data/Farmers_Market_Data.csv}"];
+Farmers_Market_Data_db [shape=record rankdir=LR label="{<f0> Farmers_Market_Data_db |<f1> file\://sqlite/Farmers_Market_Data.db}"];
+Farmers_Market_Data_sql_csv [shape=record rankdir=LR label="{<f0> Farmers_Market_Data_sql_csv |<f1> file\://Data/Farmers_Market_Data_sql.csv}"];
+node[shape=box style="rounded,filled" fillcolor="#FCFCFC" peripheries=1 fontname=Helvetica]
+CleanWithOpenRefine -> Farmers_Market_Data_csv
+Farmers_latest_csv -> CleanWithOpenRefine
+ConvertToDatabaseWithSQLite -> Farmers_Market_Data_db
+Farmers_Market_Data_csv -> ConvertToDatabaseWithSQLite
+Farmers_Market_Data_db -> IntegrityCheckWithSQLite
+CleanWithSQLite -> Farmers_Market_Data_sql_csv
+Farmers_Market_Data_db -> CleanWithSQLite
+}}
+subgraph cluster_input_ports_group_outer { label=""; color=white
+subgraph cluster_input_ports_group_inner { label=""; color=white
+node[shape=circle style="rounded,filled" fillcolor="#FFFFFF" peripheries=1 fontname=Helvetica width=0.2]
+Farmers_latest_csv_input_port [label=""]
+}}
+subgraph cluster_output_ports_group_outer { label=""; color=white
+subgraph cluster_output_ports_group_inner { label=""; color=white
+node[shape=circle style="rounded,filled" fillcolor="#FFFFFF" peripheries=1 fontname=Helvetica width=0.2]
+Farmers_Market_Data_sql_csv_output_port [label=""]
+}}
+Farmers_latest_csv_input_port -> Farmers_latest_csv
+Farmers_Market_Data_sql_csv -> Farmers_Market_Data_sql_csv_output_port
+}
