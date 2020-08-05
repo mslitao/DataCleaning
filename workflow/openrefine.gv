@@ -5,18 +5,19 @@ label=CleanWithOpenRefine
 subgraph cluster_workflow_box_outer { label=""; color=black; penwidth=2
 subgraph cluster_workflow_box_inner { label=""; color=white
 node[shape=box style=filled fillcolor="#CCFFCC" peripheries=1 fontname=Courier]
-LoadToOpenRefine [shape=record rankdir=LR label="{<f0> LoadToOpenRefine |<f1> Upload farmersmarkets.csv data to OpenRefine}"];
+LoadToOpenRefine [shape=record rankdir=LR label="{<f0> LoadToOpenRefine |<f1> Upload Farmers_latest.csv data to OpenRefine}"];
 ColumnsToClean [shape=record rankdir=LR label="{<f0> ColumnsToClean |<f1> Columns that are cleaned}"];
 TrimSpaces [shape=record rankdir=LR label="{<f0> TrimSpaces |<f1> Trim leading and trailing white space}"];
 CollapseSpaces [shape=record rankdir=LR label="{<f0> CollapseSpaces |<f1> Collapse consecutive white spaces}"];
-FormatTime [shape=record rankdir=LR label="{<f0> FormatTime |<f1> Change 'Month DD YYYY' to 'MM/DD/YYYY'}"];
+FormatTime [shape=record rankdir=LR label="{<f0> FormatTime |<f1> Format with value.toDate()}"];
 ClusterValues [shape=record rankdir=LR label="{<f0> ClusterValues |<f1> Cluster Similar values}"];
 DeleteNAorNONE [shape=record rankdir=LR label="{<f0> DeleteNAorNONE |<f1> Delete na or none values}"];
 SplitInto2Columns [shape=record rankdir=LR label="{<f0> SplitInto2Columns |<f1> Split date into Start Date and End Date}"];
 CleanFormatZip [shape=record rankdir=LR label="{<f0> CleanFormatZip |<f1> Clean any string and reformat to NNNNN or NNNNN-NNNN}"];
+MergeYear [shape=record rankdir=LR label="{<f0> MergeYear |<f1> Merge the year of updatedTime into Season1Date}"];
 ToDateType [shape=record rankdir=LR label="{<f0> ToDateType |<f1> Change data type to date}"];
 node[shape=box style="rounded,filled" fillcolor="#FFFFCC" peripheries=1 fontname=Helvetica]
-farmersmarkets_csv [shape=record rankdir=LR label="{<f0> farmersmarkets_csv |<f1> file\://data/farmersmarkets.csv}"];
+Farmers_latest_csv [shape=record rankdir=LR label="{<f0> Farmers_latest_csv |<f1> file\://data/Farmers_latest.csv}"];
 spreadsheet
 MarketName
 Facebook
@@ -39,9 +40,10 @@ Season1Date_
 zip
 Season1StartDate
 Season1EndDate
+Farmers_Market_Data_csv [shape=record rankdir=LR label="{<f0> Farmers_Market_Data_csv |<f1> file\://data/Farmers_Market_Data.csv}"];
 node[shape=box style="rounded,filled" fillcolor="#FCFCFC" peripheries=1 fontname=Helvetica]
 LoadToOpenRefine -> spreadsheet
-farmersmarkets_csv -> LoadToOpenRefine
+Farmers_latest_csv -> LoadToOpenRefine
 ColumnsToClean -> MarketName
 ColumnsToClean -> Facebook
 ColumnsToClean -> Twitter
@@ -89,17 +91,21 @@ SplitInto2Columns -> Season1StartDate
 SplitInto2Columns -> Season1EndDate
 Season1Date_ -> SplitInto2Columns
 zip -> CleanFormatZip
-Season1StartDate -> ToDateType
-Season1EndDate -> ToDateType
+Season1StartDate -> MergeYear
+Season1EndDate -> MergeYear
+ToDateType -> Farmers_Market_Data_csv
+MergeYear -> ToDateType
 }}
 subgraph cluster_input_ports_group_outer { label=""; color=white
 subgraph cluster_input_ports_group_inner { label=""; color=white
 node[shape=circle style="rounded,filled" fillcolor="#FFFFFF" peripheries=1 fontname=Helvetica width=0.2]
-farmersmarkets_csv_input_port [label=""]
+Farmers_latest_csv_input_port [label=""]
 }}
 subgraph cluster_output_ports_group_outer { label=""; color=white
 subgraph cluster_output_ports_group_inner { label=""; color=white
 node[shape=circle style="rounded,filled" fillcolor="#FFFFFF" peripheries=1 fontname=Helvetica width=0.2]
+Farmers_Market_Data_csv_output_port [label=""]
 }}
-farmersmarkets_csv_input_port -> farmersmarkets_csv
+Farmers_latest_csv_input_port -> Farmers_latest_csv
+Farmers_Market_Data_csv -> Farmers_Market_Data_csv_output_port
 }

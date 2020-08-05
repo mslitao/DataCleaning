@@ -1,11 +1,11 @@
 '''
 @begin CleanWithOpenRefine @desc OpenRefine Workflow for farmersmarkets dataset
-@in farmersmarkets_csv @uri file://data/farmersmarkets.csv
+@in Farmers_latest_csv @uri file://data/Farmers_latest.csv
 
-    @begin LoadToOpenRefine @desc Upload farmersmarkets.csv data to OpenRefine
-    @in farmersmarkets_csv @uri file://data/farmersmarkets.cv
+    @begin LoadToOpenRefine @desc Upload Farmers_latest.csv data to OpenRefine
+    @in Farmers_latest_csv @uri file://data/Farmers_latest.csv
     @out spreadsheet
-    @end CleanWithOpenRefine
+    @end LoadToOpenRefine
 
     @begin ColumnsToClean @desc Columns that are cleaned
     @in spreadsheet
@@ -55,7 +55,7 @@
     @out Season1Date_
     @end CollapseSpaces
 
-    @begin FormatTime @desc Change 'Month DD YYYY' to 'MM/DD/YYYY'
+    @begin FormatTime @desc Format with value.toDate()
     @in updatedTime
     @end FormatTime
 
@@ -74,18 +74,23 @@
     @in Season1Date_
     @out Season1StartDate
     @out Season1EndDate
-    @end SPlitInto2Columns
+    @end SplitInto2Columns
 
     @begin CleanFormatZip @desc Clean any string and reformat to NNNNN or NNNNN-NNNN
     @in zip
     @end CleanFormatZip
 
-    @begin ToDateType @desc Change data type to date
+    @begin MergeYear @desc Merge the year of updatedTime into Season1Date
     @in Season1StartDate
     @in Season1EndDate
+    @end MergeYear
+
+    @begin ToDateType @desc Change data type to date
+    @in MergeYear
+    @out Farmers_Market_Data_csv @uri file://data/Farmers_Market_Data.csv
     @end ToDateType
 
-@out farmersmarkets-or_csv @uri file://data/farmersmarkets-or.csv
+@out Farmers_Market_Data_csv @uri file://data/Farmers_Market_Data.csv
 @end CleanWithOpenRefine
 
 '''
